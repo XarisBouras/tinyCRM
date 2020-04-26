@@ -8,7 +8,7 @@ namespace tinyCRMConsole
         {
 
              Console.WriteLine("Give your afm.");
-              Console.WriteLine(IsValidafm("88766"));
+              Console.WriteLine(IsValidafm("88777"));
             //   Console.WriteLine(IsValidafm("098765432"));
             //  Console.WriteLine(IsValidafm("    0123547853  "));
             //  Console.WriteLine(IsValidafm(null));
