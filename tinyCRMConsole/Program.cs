@@ -7,29 +7,8 @@ namespace tinyCRMConsole
         static void Main(string[] args)
         {
 
-             Console.WriteLine("Give your afm.");
-              Console.WriteLine(IsValidafm("88777"));
-            //   Console.WriteLine(IsValidafm("098765432"));
-            //  Console.WriteLine(IsValidafm("    0123547853  "));
-            //  Console.WriteLine(IsValidafm(null));
-            // var val = IsAdult(23);
-            // Console.WriteLine(val);
-            // Console.WriteLine(IsValidEmail("xaxa@cdcd.gr"));
-            var array = new int[4];
-            for(int i=0; i<array.Length; i++)
-            {
-                if (int.TryParse(Console.ReadLine(), out int num))
-                {
-                    array[i] = num;
-                 
-                }
-                else Console.WriteLine("Fail");
-            }
-            foreach(var i in array)
-            {
-                Console.WriteLine("Hey" + i);
-            }
-           
+            // Console.WriteLine(IsValidafm("12345g689"));
+            Console.WriteLine(IsValidEmail("   xasa@mm.grdd   "));
         }
         public static bool IsValidafm(string afm)
         {
@@ -41,12 +20,7 @@ namespace tinyCRMConsole
 
             afm = afm.Trim();
 
-            if (afm.Length != 9)
-            {
-                return false;
-            }
-
-            if (!int.TryParse(afm, out number))
+            if (afm.Length != 9 || !int.TryParse(afm, out number))
             {
                 return false;
             }
@@ -69,7 +43,7 @@ namespace tinyCRMConsole
                 {
                     if (mail[i] == '@') s++;
                 }
-                if (s == 1 && (mail.Contains(".gr") || mail.Contains(".com"))) return true;
+                if (s == 1 && (mail.Contains(".gr") || mail.EndsWith(".com"))) return true;
             }
             return false;
         }
