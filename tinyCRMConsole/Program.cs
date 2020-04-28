@@ -9,6 +9,7 @@ namespace tinyCRMConsole
 
             // Console.WriteLine(IsValidafm("12345g689"));
             Console.WriteLine(IsValidEmail("   xasa@mm.grdd   "));
+            
         }
         public static bool IsValidafm(string afm)
         {
@@ -43,7 +44,7 @@ namespace tinyCRMConsole
                 {
                     if (mail[i] == '@') s++;
                 }
-                if (s == 1 && (mail.Contains(".gr") || mail.EndsWith(".com"))) return true;
+                if (s == 1 && (mail.EndsWith(".gr") || mail.EndsWith(".com"))) return true;
             }
             return false;
         }
