@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
+using System.Data;
 
 namespace tinyCRMConsole
 {
@@ -13,15 +14,18 @@ namespace tinyCRMConsole
         static void Main(string[] args)
         {
 
-            string path = @"C:\Users\ΧΑΡΗΣ\devel\GitHub\tinyCRMConsole\Product_List.csv";
+            string path = "Product_List.csv";
+            try
+            {
+                var reader = new StreamReader(path);
 
-            var reader = new StreamReader(path);
-            
-            var i = 0;
-            string[] productid = new string[200];  //array for storing products id
-            var product = new List<Product>(); //List of Product objects
+                if (reader == null) throw new Exception();  //File doesn't exist
 
-            while (!reader.EndOfStream)
+                var i = 0;
+                string[] productid = new string[200];  //array for storing products id
+                var product = new List<Product>(); //List of Product objects
+
+                while (!reader.EndOfStream)
                 {
 
                     var line = reader.ReadLine();  //Read Line from Document
@@ -42,15 +46,15 @@ namespace tinyCRMConsole
                         newProduct.ProductId = productid[i] = values[0];  //product id
                         newProduct.Name = values[1];  //product name
                         newProduct.Description = values[2];  //product description
-                                                             
+
                         product.Add(newProduct); //add to list of objects
 
                         i++;
                     }
                 }
 
-            var k = 1;
-            foreach (var prod in product)
+                var k = 1;
+                foreach (var prod in product)
                 {
                     Console.WriteLine($"Product {k} id: {prod.ProductId}");
                     Console.WriteLine($"Product {k} name: {prod.Name}");
@@ -60,8 +64,14 @@ namespace tinyCRMConsole
                     k++;
                 }
 
-          //  Product[] pinakas = product.ToArray();  //List of objects to array of objects
-                                                      // parsing through pinakas[m].Name;
+            }
+            catch (Exception) { Console.WriteLine("file not found"); }
+
+
+
+
+
+
         }
 
         public static bool IsNotNullOrWhitespaceOrDouble(string element, string[] array)

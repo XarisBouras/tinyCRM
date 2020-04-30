@@ -8,15 +8,15 @@ namespace tinyCRMConsole
     {
         public string ProductId { get; set; }
         public string Description { get; set; }
-        public double Price { get; private set; }
+        public decimal Price { get; private set; }
         public string Name { get; set; }
 
 
         public Product()
         {
-            Random random = new Random();
-            var value = random.NextDouble() * 1000;
-            Price = value;
+            var random = new Random();
+            var value = Math.Round(random.NextDouble() * 1000, 2);
+            Price = (decimal) value;
         }
     }
 }

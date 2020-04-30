@@ -6,6 +6,7 @@ namespace tinyCRMConsole
 {
   public  class Costumer
     {
+        public string CostumerId { get; set; }
         public DateTime Created { get; private set; }
         public string Firstname { get; set; }
         public string Lastname {get; set;}
