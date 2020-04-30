@@ -37,5 +37,20 @@ namespace tinyCRMConsole
             return Age >= 18 && Age < 100;
         }
 
+        //public bool IsValidEmail(string mail)
+        //{
+        //    var s = 0;
+        //    if (!string.IsNullOrWhiteSpace(mail))
+        //    {
+        //        mail = mail.Trim();
+        //        for (int i = 0; i < mail.Length; i++)
+        //        {
+        //            if (mail[i] == '@') s++;
+        //        }
+        //        if (s == 1 && (mail.EndsWith(".gr") || mail.EndsWith(".com"))) return true;
+        //    }
+        //    return false;
+        //}
+
     }
 }

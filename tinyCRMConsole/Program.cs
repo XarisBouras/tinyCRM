@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Globalization;
 using System.IO;
+using System.Collections.Generic;
 
 namespace tinyCRMConsole
 {
@@ -12,15 +13,15 @@ namespace tinyCRMConsole
         static void Main(string[] args)
         {
 
-            string path = @"C:\Users\ΧΑΡΗΣ\devel\GitHub\tinyCRMConsole\Product_Test.csv";
+            string path = @"C:\Users\ΧΑΡΗΣ\devel\GitHub\tinyCRMConsole\Product_List.csv";
 
-            using (var reader = new StreamReader(path))
-            {
-                var i = 0;
-                string[,] product = new string[200, 3]; // twodimensional array 200x3 (id, name, description)
-                double[] price = new double[200];  //Random prices of products
+            var reader = new StreamReader(path);
+            
+            var i = 0;
+            string[] productid = new string[200];  //array for storing products id
+            var product = new List<Product>(); //List of Product objects
 
-                while (!reader.EndOfStream)
+            while (!reader.EndOfStream)
                 {
 
                     var line = reader.ReadLine();  //Read Line from Document
@@ -32,96 +33,55 @@ namespace tinyCRMConsole
                         continue;
                     }
 
+                    var newProduct = new Product();
+
                     var values = line.Split(';');
 
-                    if (IsNotNullOrWhitespaceOrDouble(values[0], product))
+                    if (IsNotNullOrWhitespaceOrDouble(values[0], productid))
                     {
-                        product[i, 0] = values[0];  //product id
-                        product[i, 1] = values[1];  //product name
-                        product[i, 2] = values[2];  //product description
-                        price[i] = CreatePrice();   //product price
+                        newProduct.ProductId = productid[i] = values[0];  //product id
+                        newProduct.Name = values[1];  //product name
+                        newProduct.Description = values[2];  //product description
+                                                             
+                        product.Add(newProduct); //add to list of objects
+
                         i++;
                     }
-
                 }
 
-                for (var j = 0; j < i; j++)
+            var k = 1;
+            foreach (var prod in product)
                 {
-                    Console.WriteLine($"Product {j + 1} id: {product[j, 0]}");
-                    Console.WriteLine($"Product {j + 1} name: {product[j, 1]}");
-                    Console.WriteLine($"Product {j + 1} description: {product[j, 2]}");
-                    Console.WriteLine($"Product {j + 1} price: {price[j]}");
+                    Console.WriteLine($"Product {k} id: {prod.ProductId}");
+                    Console.WriteLine($"Product {k} name: {prod.Name}");
+                    Console.WriteLine($"Product {k} description: {prod.Description}");
+                    Console.WriteLine($"Product {k} price: {prod.Price}");
                     Console.WriteLine();
+                    k++;
                 }
-            }
 
+          //  Product[] pinakas = product.ToArray();  //List of objects to array of objects
+                                                      // parsing through pinakas[m].Name;
         }
 
-        public static double CreatePrice()
-        {
-            Random random = new Random();
-            var value = random.NextDouble() * 1000;
-            return value;
-        }
-
-        public static bool IsNotNullOrWhitespaceOrDouble(string element, string[,] array)
+        public static bool IsNotNullOrWhitespaceOrDouble(string element, string[] array)
         {
             if (string.IsNullOrWhiteSpace(element))
             {
                 Console.WriteLine("Product id is missing");
                 return true;
             }
-            for (var i = 0; i < array.GetLength(0); i++)
+            for (var i = 0; i < array.Length; i++)
             {
-                if (element == array[i, 0])
+                if (element == array[i])
                 {
                     Errors++;
-                    Console.WriteLine($"Double product ID found, at Document line {i + Errors +1}");
+                    Console.WriteLine($"Double product ID found, at Document line {i + Errors + 1}");
                     Console.WriteLine();
                     return false;
                 }
             }
             return true;
         }
-
-
-        //public static bool IsValidafm(string afm)
-        //{
-        //    int number;
-        //    if (string.IsNullOrWhiteSpace(afm))
-        //    {
-        //        return false;
-        //    }
-
-        //    afm = afm.Trim();
-
-        //    if (afm.Length != 9 || !int.TryParse(afm, out number))
-        //    {
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
-
-        //public static bool IsAdult(int age)
-        //{
-        //    return age >= 18 && age <= 100;
-        //}
-
-        //public static bool IsValidEmail(string mail)
-        //{
-        //    var s = 0;
-        //    if (!string.IsNullOrWhiteSpace(mail))
-        //    {
-        //        mail = mail.Trim();
-        //        for (int i = 0; i < mail.Length; i++)
-        //        {
-        //            if (mail[i] == '@') s++;
-        //        }
-        //        if (s == 1 && (mail.EndsWith(".gr") || mail.EndsWith(".com"))) return true;
-        //    }
-        //    return false;
-        //}
-
     }
 }
