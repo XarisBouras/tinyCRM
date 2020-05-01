@@ -4,7 +4,7 @@ using System.Text;
 
 namespace tinyCRMConsole
 {
-  public  class Costumer
+  public  class Costumer 
     {
         public string CostumerId { get; set; }
         public DateTime Created { get; private set; }
@@ -17,15 +17,20 @@ namespace tinyCRMConsole
         public bool IsActive { get; set; }
         public int Age { get; set; }
 
-        public Costumer(string vatNumber)
+        public List<Order> CostumerOrderList = new List<Order>();
+
+
+
+        public Costumer(string vatNumber, string firstname)
         {
-            if(!IsValidVatnumber(vatNumber))
-            {
-                throw new Exception("Invalid Vat Number");
-            }
+            //if (!IsValidVatnumber(vatNumber))
+            //{
+            //    throw new Exception ("Invalid Vat Number");
+            //}
 
             VatNumber = vatNumber;
             Created = DateTime.Now;
+            Firstname = firstname;
         }
 
         public bool IsValidVatnumber(string vatNumber)

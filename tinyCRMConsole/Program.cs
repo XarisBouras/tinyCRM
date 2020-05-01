@@ -5,6 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Runtime.CompilerServices;
 
 namespace tinyCRMConsole
 {
@@ -22,17 +25,16 @@ namespace tinyCRMConsole
                 if (reader == null) throw new Exception();  //File doesn't exist
 
                 var i = 0;
-                string[] productid = new string[200];  //array for storing products id
+
                 var product = new List<Product>(); //List of Product objects
 
                 while (!reader.EndOfStream)
                 {
-
                     var line = reader.ReadLine();  //Read Line from Document
 
                     if (string.IsNullOrWhiteSpace(line))  //check for empty line
                     {
-                        Console.WriteLine("Empty line found.");
+                        Console.WriteLine("Empty line found.\n");
                         Errors++;
                         continue;
                     }
@@ -41,57 +43,127 @@ namespace tinyCRMConsole
 
                     var values = line.Split(';');
 
-                    if (IsNotNullOrWhitespaceOrDouble(values[0], productid))
+                    if (!product.Where(product => product.ProductId.Equals(values[0]))
+                               .Any())
                     {
-                        newProduct.ProductId = productid[i] = values[0];  //product id
+                        if (string.IsNullOrWhiteSpace(values[0]))
+                        {
+                            Console.WriteLine("Product id is missing \n");
+                        }
+                        newProduct.ProductId = values[0];  //product id
                         newProduct.Name = values[1];  //product name
                         newProduct.Description = values[2];  //product description
+                        newProduct.Price = GetRandomPrice();  //product's price
 
                         product.Add(newProduct); //add to list of objects
 
                         i++;
                     }
+                    else
+                    {
+                        Errors++;
+                        Console.WriteLine($"Double product ID found, at Document line {i + Errors}");
+                        Console.WriteLine();
+                    }
                 }
 
-                var k = 1;
-                foreach (var prod in product)
+                //var k = 1;                    //products output
+                //foreach (var prod in product)  
+                //{
+                //    Console.WriteLine($"Product {k} id: {prod.ProductId}");
+                //    Console.WriteLine($"Product {k} name: {prod.Name}");
+                //    Console.WriteLine($"Product {k} description: {prod.Description}");
+                //    Console.WriteLine($"Product {k} price: {prod.Price}");
+                //    Console.WriteLine();
+
+                //    k++;
+                //}
+
+                var costumer = new List<Costumer>(); //Costumer list
+
+                // "dummy" costumer1
+                var costumer1 = new Costumer("123456789", "xaris");
+                costumer.Add(costumer1);
+
+                // "dummy" costumer2
+                var costumer2 = new Costumer("789456123", "julie");
+                costumer.Add(costumer2);
+
+                var order1 = new Order();
+                var order2 = new Order();
+
+                for (var s = 0; s < 10; s++)  // select 10 random products for orders
                 {
-                    Console.WriteLine($"Product {k} id: {prod.ProductId}");
-                    Console.WriteLine($"Product {k} name: {prod.Name}");
-                    Console.WriteLine($"Product {k} description: {prod.Description}");
-                    Console.WriteLine($"Product {k} price: {prod.Price}");
-                    Console.WriteLine();
-                    k++;
+                    var random = new Random();
+                    var value = random.Next(1, product.Count());
+                    order1.ListOfProductsInOrder.Add(product.ElementAt(value));
+
+                    var val = random.Next(1, product.Count());
+                    order2.ListOfProductsInOrder.Add(product.ElementAt(val));
                 }
 
-            }
-            catch (Exception) { Console.WriteLine("file not found"); }
-
-
-
-
-
-
-        }
-
-        public static bool IsNotNullOrWhitespaceOrDouble(string element, string[] array)
-        {
-            if (string.IsNullOrWhiteSpace(element))
-            {
-                Console.WriteLine("Product id is missing");
-                return true;
-            }
-            for (var i = 0; i < array.Length; i++)
-            {
-                if (element == array[i])
+                foreach (var item in order1.ListOfProductsInOrder)
                 {
-                    Errors++;
-                    Console.WriteLine($"Double product ID found, at Document line {i + Errors + 1}");
-                    Console.WriteLine();
-                    return false;
+                    Console.WriteLine($"Order 1 item's name: {item.Name} and price: {item.Price}");
+                    order1.TotalAmount += item.Price;
                 }
+
+                costumer1.CostumerOrderList.Add(order1);  // add selected products to costumer1's order list                
+                Console.WriteLine();
+
+                foreach (var item in order2.ListOfProductsInOrder)
+                {
+                    Console.WriteLine($"Order 2 item's name: {item.Name} and price: {item.Price}");
+                    order2.TotalAmount += item.Price;
+                }
+
+                costumer2.CostumerOrderList.Add(order2); //add selected products to costumer2's order list
+                Console.WriteLine();
+
+                if (order1.TotalAmount < order2.TotalAmount)
+                {
+                    Console.WriteLine($"Most valued costumer is {costumer2.Firstname} " +
+                        $"with total sum: {order2.TotalAmount} \n");
+                }
+                else if (order1.TotalAmount > order2.TotalAmount)
+                {
+                    Console.WriteLine($"Most valued costumer is {costumer1.Firstname} " +
+                     $"with total sum: {order1.TotalAmount} \n");
+                }
+                else
+                {
+                    Console.WriteLine($"Both costumers are valued \n");
+                }
+
+                var bestselling = costumer                                //Find Best selling products
+                                        .SelectMany(x => x.CostumerOrderList)
+                                        .SelectMany(y => y.ListOfProductsInOrder)
+                                        .GroupBy(k => k)
+                                        .Select(j => new { Element = j.Key, Counter = j.Count() })
+                                        .OrderByDescending(z => z.Counter)
+                                        .Distinct()
+                                        .Take(5)
+                                        .ToList();
+
+                Console.WriteLine("Best selling products\n");
+                foreach (var item in bestselling)
+                {
+                    Console.WriteLine($"product's name: {item.Element.Name} " +
+                    $"product's id: {item.Element.ProductId} number of times: {item.Counter}");
+                }
+
             }
-            return true;
+            catch (Exception)
+            {
+                Console.WriteLine("file not found");
+            }
+
+            static decimal GetRandomPrice()
+            {
+                var random = new Random();
+                var value = Math.Round(random.NextDouble() * 100, 2);
+                return (decimal)value;
+            }
         }
     }
 }
