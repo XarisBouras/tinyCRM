@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace tinyCRMConsole
+namespace TinyCrmConsole
 {
-   public class CustomerSearchOptions
+    public class CustomerSearchOptions
     {
-        public int CustomerId { get; set; }
-        public string Firstname { get; set; }
-        public string Lastname { get; set; }
+        public int? CustomerId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string VatNumber { get; set; }
-        public DateTime CreatedFrom { get; set; }
-        public DateTime CreatedTo { get; set; }
+        public DateTimeOffset? CreatedFrom { get; set; }
+        public DateTimeOffset? CreatedTo { get; set; }
+       
     }
 }

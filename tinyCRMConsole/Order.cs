@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace tinyCRMConsole
+namespace TinyCrmConsole
 {
     public class Order
     {
-        public string OrderId { get; set; }
+        public int OrderId { get; set; }
         public string DeliveryAddress { get; set; }
-        public decimal TotalAmount { get;  set; }
+        public decimal TotalAmount { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public List<OrderProduct> OrderProducts { get; set; }
 
-        public List<Product> ListOfProductsInOrder = new List<Product>();
-
+        public Order()
+        {
+            OrderProducts = new List<OrderProduct>();
+            Created = DateTimeOffset.Now;
+        }
     }
 }

@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace tinyCRMConsole
+namespace TinyCrmConsole
 {
     public class TinyCrmDbContext : DbContext
-    {
-
+    {       
        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
@@ -25,8 +24,20 @@ namespace tinyCRMConsole
                 .ToTable("Customer");
 
             modelBuilder
-             .Entity<Product>()  
+             .Entity<Product>()
              .ToTable("Product");
+
+            modelBuilder
+            .Entity<Order>()
+            .ToTable("Order");
+
+            modelBuilder
+            .Entity<OrderProduct>()
+            .ToTable("OrderProduct");
+
+            modelBuilder
+                .Entity<OrderProduct>()
+                .HasKey(op => new { op.ProductId, op.OrderId });
         }
     }
 }

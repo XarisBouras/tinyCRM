@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Dynamic;
-using System.Globalization;
-using System.IO;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Runtime.CompilerServices;
 
-namespace tinyCRMConsole
+namespace TinyCrmConsole
 {
-    class Program
+   public class Program
     {
         //static int Errors = 0;  //Errors: Empty line, double id
         static void Main(string[] args)
         {
-
             //string path = "Product_List.csv";
             //try
             //{
@@ -165,85 +156,161 @@ namespace tinyCRMConsole
             //    return (decimal)value;
             //}
 
-
-
-
             // insert new customer
-            var customerCreate = new CustomerCreateOptions
-            {
-                Lastname = "Mpouras",
-                Firstname = "xaris",
-                Dob = new DateTime(1991, 5, 21),
-                Email = "xaris@mail.com",
-                VatNumber = "123456789"
-            };
+            //var customerCreate = new CustomerCreateOptions
+            //{
+            //    Lastname = "Mpouras",
+            //    Firstname = "xaris",
+            //    Dob = new DateTime(1991, 5, 21),
+            //    Email = "xaris@mail.com",
+            //    VatNumber = "123456789"
+            //};
 
-            var customer = new CustomerCrud();
-            customer.CreateCustomer(customerCreate);
+            //var customer = new CustomerCrud();
+            //customer.CreateCustomer(customerCreate);
 
-            // search customer
-            var customerSearchOpt = new CustomerSearchOptions
-            {
-                Firstname = "xaris",
-                Lastname = "Mpouras",
-                VatNumber = "123456789",
-                CreatedFrom = new DateTime(2020, 5, 1),
-                CreatedTo = new DateTime(2020, 7, 20),
-                CustomerId = 2
-            };
+            //// search customer
+            //var customerSearchOpt = new CustomerSearchOptions
+            //{
+            //    Firstname = "xaris",
+            //    Lastname = "Mpouras",
+            //    VatNumber = "123456789",
+            //    CreatedFrom = new DateTime(2020, 5, 1),
+            //    CreatedTo = new DateTime(2020, 7, 20),
+            //    CustomerId = 2
+            //};
 
-            try
-            {
-                var customerToFind = customer.SearchCustomer(customerSearchOpt);
+            //try
+            //{
+            //    var customerToFind = customer.SearchCustomer(customerSearchOpt);
 
-                Console.WriteLine($"customer name {customerToFind.Firstname} and surname {customerToFind.Lastname}");
+            //    Console.WriteLine($"customer name {customerToFind.Firstname} and surname {customerToFind.Lastname}");
 
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Couldn't find specified customer.");
-                var tinyCrmDbContext = new TinyCrmDbContext();
-                var customersList = tinyCrmDbContext.Set<Customer>()
-                                                    .Where(n => n.CustomerId <= 500)
-                                                    .ToList();
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    Console.WriteLine("Couldn't find specified customer.");
+            //    var tinyCrmDbContext = new TinyCrmDbContext();
+            //    var customersList = tinyCrmDbContext.Set<Customer>()
+            //                                        .Where(n => n.CustomerId <= 500)
+            //                                        .ToList();
+            //}
 
-            // insert new product
-            var productCreate = new ProductCreateOptions
-            {
-                Name = "loumidis",
-                Description = "ellinikos kafes",
-                Price = 1.23M,
-                ProductCategory = "Kafes"
-            };
+            //// insert new product
+            //var productCreate = new ProductCreateOptions
+            //{
+            //    Name = "loumidis",
+            //    Description = "ellinikos kafes",
+            //    Price = 1.23M,
+            //    ProductCategory = "Kafes"
+            //};
 
-            var product = new ProductCrud();
-            product.CreateProduct(productCreate);
+            //var product = new ProductCrud();
+            //product.CreateProduct(productCreate);
 
-            // search product
-            var productSearchOpt = new ProductSearchOptions
-            {
-                ProductId = 1,
-                Categories = "Kafes",
-                PriceFrom = 1.1M,
-                PriceTo = 2M
-            };
+            //// search product
+            //var productSearchOpt = new ProductSearchOptions
+            //{
+            //    ProductId = 1,
+            //    Categories = "Kafes",
+            //    PriceFrom = 1.1M,
+            //    PriceTo = 2M
+            //};
 
-            try
-            {
-                var productToFind = product.SearchProduct(productSearchOpt);
+            //try
+            //{
+            //    var productToFind = product.SearchProduct(productSearchOpt);
 
-                Console.WriteLine($"product name {productToFind.Name} and price {productToFind.Price}");
+            //    Console.WriteLine($"product name {productToFind.Name} and price {productToFind.Price}");
 
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Couldn't find specified product.");
-                var tinyCrmDbContext = new TinyCrmDbContext();
-                var productsList = tinyCrmDbContext.Set<Product>()
-                                                    .Where(n => n.ProductId <= 500)
-                                                    .ToList();
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    Console.WriteLine("Couldn't find specified product.");
+            //    var tinyCrmDbContext = new TinyCrmDbContext();
+            //    var productsList = tinyCrmDbContext.Set<Product>()
+            //                                        .Where(n => n.ProductId <= 500)
+            //                                        .ToList();
+            //}
+
+            //------------------------------------------------------------------//
+
+            var context = new TinyCrmDbContext();
+
+            IProductService productService = new ProductService(context);
+            ICustomerService customerService = new CustomerService(context);
+            IOrderService orderService = new OrderService(context, customerService, productService);
+
+            //---------ICustomerService---------------------------------------//
+
+            //var customer = customerService.CreateCustomer(new CustomerCreateOptions()
+            //{
+            //    FirstName = "tassos",
+            //    LastName = "mpouras",
+            //    Email = "tassos@mail.com",
+            //    VatNumber = "789456456",
+            //    Dob = DateTimeOffset.Parse("1993, 02, 26")
+            //});
+            //var customer2 = customerService.GetCustomerById(2);
+            //Console.WriteLine($"{customer2.FirstName}");
+            //var test = customerService.UpdateCustomer(new CustomerUpdateOptions()
+            //{
+            //    LastName = "Konstantopoulou"
+            //}, 2);
+            //Console.WriteLine($"{test}");
+            //var customer3 = customerService.SearchCustomer(new CustomerSearchOptions()
+            //{
+            //    FirstName = "xaris"
+            //}).SingleOrDefault();
+            //Console.WriteLine($"{customer3.FirstName}");
+
+            //-------------IProductService-------------------------------//
+
+            //var product = productService.CreateProduct(new ProductCreateOptions()
+            //{
+            //    Name = "Loumidis",
+            //    Description = "papa",
+            //    Category = ProductCategory.Coffee,
+            //    Price = 1.2M
+            //});
+            //var product2 = productService.GetProductById(1);
+            //Console.WriteLine($"{product2.Name}");
+            //var product3 = productService.SearchProducts(new ProductSearchOptions()
+            //{
+            //    PriceFrom = 800M
+            //}).SingleOrDefault();
+            //Console.WriteLine($"{product3.Name}");
+            //var update = productService.UpdateProduct(new ProductUpdateOptions()
+            //{
+            //    Description = "Papagalos"
+            //}, 3);
+            //Console.WriteLine($"{update}");
+
+            //-------------IOrderService---------------------------------//
+
+            //var order = orderService.CreateOrder(new OrderCreateOptions()
+            //{
+            //    CustomerId = 2,
+            //    DeliveryAddress = "Kalamata",
+            //    ProductIds = { 1 }
+            //});
+            //Console.WriteLine($"{order.TotalAmount}");
+            //var order2 = orderService.GetOrderById(1);            
+            //foreach (var item in order2.OrderProducts)
+            //{
+            //    Console.WriteLine($"{item.ProductId}");
+            //    var product = productService.GetProductById(item.ProductId);
+            //    Console.WriteLine(product.Name);
+            //}
+            //var order3 = orderService.SearchOrder(new OrderSearchOptions()
+            //{
+            //    DeliveryAddress = "Aris"
+            //}).SingleOrDefault();
+            //Console.WriteLine(order3.OrderId);
+            //orderService.UpdateOrder(new OrderUpdateOptions()
+            //{
+            //    DeliveryAddress = "Iatropoulou 1"
+            //}, 2);
         }
     }
 }

@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace tinyCRMConsole
+namespace TinyCrmConsole
 {
-   public class ProductSearchOptions
+    public class ProductSearchOptions
     {
-        public int ProductId { get; set; }
-        public decimal PriceFrom { get; set; }
-        public decimal PriceTo { get; set; }
-        public string Categories { get; set; }
+        public int? ProductId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal? PriceFrom { get; set; }
+        public decimal? PriceTo { get; set; }
+        public ProductCategory? Category { get; set; }
     }
 }
